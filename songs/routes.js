@@ -5,14 +5,10 @@ const auth = require('../auth/middleware')
 
 const router = new Router()
 
-//-------   CREATE A PLAYLIST   -------//
+//-------   ADD A SONG TO A PLAYLIST   -------//
 router.post('/playlists/:id/songs', auth, (req, res, next) => {
-  // console.log(req.params)
   const userId = req.user.dataValues.id
-  const h = req.headers
-  console.log(h)
 
-  // console.log(req.headers)
   Playlist
     .findOne({
       where: {
@@ -21,17 +17,17 @@ router.post('/playlists/:id/songs', auth, (req, res, next) => {
       }
     })
     .then(playlist => {
-      console.log(h.title, h.artist, h.album)
+
+
       Song
         .create({
-          title: h.title,
-          artist: h.artist,
-          album: h.album,
+          title: req.headers.title,
+          artist: req.headers.artist,
+          album: req.headers.album,
           playlist_id: req.params.id,
           user_id: userId
         })
         .then(song => {
-          console.log(song)
           if (!song) {
             res.status(422).send({
               message: `Song provided is incorrect`
@@ -45,6 +41,8 @@ router.post('/playlists/:id/songs', auth, (req, res, next) => {
           })
           next(error)
         })
+
+
     })
     .catch(error => {
       res.status(404).send({
@@ -54,5 +52,36 @@ router.post('/playlists/:id/songs', auth, (req, res, next) => {
     })
 })
 
+router.get('/playlists/:id/songs', auth, (req, res, next) => {
+  const userId = req.user.dataValues.id
+
+
+  Song
+    .findAll({
+      where: {
+        user_id: userId,
+        playlist_id: req.params.id,
+      }
+    })
+    .then(songs => {
+      console.log(songs)
+      if (!songs) {
+        res.status(422).send({
+          message: `Song request is not valid`
+        })
+      }
+      if (songs<1) {
+        res.status(404).send({
+          message: `User playlist not found`
+        })
+      }
+      return res.send(songs)
+    })
+    .catch(error => {
+      res.status(404).send({
+        message: `User playlist not found`
+      })
+    })
+})
 
 module.exports = router
