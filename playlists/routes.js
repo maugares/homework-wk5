@@ -14,8 +14,8 @@ router.post('/playlists', auth, (req, res, next) => {
     })
     .then(playlist => {
       if (!playlist) {
-        res.status(404).send({
-          message: `Playlist not provided`
+        res.status(422).send({
+          message: `Playlist provided is incorrect`
         })
       }
       res.setHeader('user_id', userId)
@@ -39,9 +39,9 @@ router.get('/playlists', auth, (req, res, next) => {
       }
     })
     .then(playlists => {
-      if (!playlist) {
-        res.status(404).send({
-          message: `Playlist does not exist`
+      if (!playlists) {
+        res.status(422).send({
+          message: `Playlist provided is incorrect`
         })
       }
       return res.send([playlists])
@@ -66,14 +66,14 @@ router.get('/playlists/:id', auth, (req, res, next) => {
     })
     .then(playlist => {
       if (!playlist) {
-        res.status(404).send({
-          message: `Playlist does not exist`
+        res.status(422).send({
+          message: `Playlist provided is incorrect`
         })
       }
       return res.send(playlist)
     })
     .catch(error => {
-      res.status(400).send({
+      res.status(404).send({
         message: `User playlist not found`
       })
       next(error)
@@ -92,7 +92,7 @@ router.delete('/playlists/:id', auth, (req, res, next) => {
     .then(playlist => {
       if (!playlist) {
         res.status(404).send({
-          message: `Playlist does not exist`
+          message: `Playlist provided is incorrect`
         })
       }
       return playlist.destroy()

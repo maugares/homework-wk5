@@ -6,9 +6,7 @@ const auth = require('./middleware')
 
 const router = new Router()
 
-// define endpoints here
-
-// Create a user Token on login
+//-------   CREATE A USER TOKEN   -------//
 router.post('/tokens', (req, res, next) => {
   const email = req.headers.email
   const password = req.headers.password
@@ -21,8 +19,8 @@ router.post('/tokens', (req, res, next) => {
     })
     .then(entity => {
       if (!entity) {
-        res.status(400).send({
-          message: 'User with that email does not exist'
+        res.status(404).send({
+          message: 'No user registered with that email'
         })
       }
       if (bcrypt.compareSync(req.headers.password, entity.password)) {
@@ -32,7 +30,7 @@ router.post('/tokens', (req, res, next) => {
         })
       }
       else {
-        res.status(400).send({
+        res.status(401).send({
           message: 'Password was incorrect'
         })
       }
@@ -43,15 +41,5 @@ router.post('/tokens', (req, res, next) => {
       })
       next(error)})
 })
-
-// REMOVE!!
-// Restrict access to users with a valid Token
-router.get('/test', auth, (req, res) => {
-  console.log(res)
-  res.send({
-    message: `Thanks for visiting the secret endpoint ${req.user.email}.`,
-  })
-})
-
 
 module.exports = router
