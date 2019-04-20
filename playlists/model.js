@@ -8,7 +8,7 @@ const Playlist = sequelize.define(
       type: Sequelize.STRING,
       allowNull: false
     },
-    userId: {
+    user_id: {
       type: Sequelize.INTEGER
     }
   },

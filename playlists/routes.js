@@ -10,7 +10,7 @@ router.post('/playlists', auth, (req, res, next) => {
   Playlist
     .create({
       name: req.headers.name,
-      userId: userId
+      user_id: userId
     })
     .then(playlist => {
       if (!playlist) {
@@ -18,7 +18,7 @@ router.post('/playlists', auth, (req, res, next) => {
           message: `Playlist not provided`
         })
       }
-      res.setHeader('userId', userId)
+      res.setHeader('user_id', userId)
       return res.status(201).send(playlist)
     })
     .catch(error => {
@@ -35,7 +35,7 @@ router.get('/playlists', auth, (req, res, next) => {
   Playlist
     .findAll({
       where: {
-        userId: userId
+        user_id: userId
       }
     })
     .then(playlists => {
@@ -61,7 +61,7 @@ router.get('/playlists/:id', auth, (req, res, next) => {
     .findOne({
       where: {
         id: req.params.id,
-        userId: userId,
+        user_id: userId,
       }
     })
     .then(playlist => {
@@ -86,7 +86,7 @@ router.delete('/playlists/:id', auth, (req, res, next) => {
     .findOne({
       where: {
         id: req.params.id,
-        userId: userId,
+        user_id: userId,
       }
     })
     .then(playlist => {

@@ -19,6 +19,10 @@ const Song = sequelize.define(
     playlist_id: {
       type: Sequelize.INTEGER,
       allowNull: false
+    },
+    user_id: {
+      type: Sequelize.INTEGER,
+      allowNull: false
     }
   },
   {
