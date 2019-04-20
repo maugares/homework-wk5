@@ -25,7 +25,11 @@ router.post('/users', (req, res, next) => {
         }
         return res.status(201).send(user)
       })
-      .catch(error => next(error))
+      .catch(error => {
+        res.status(400).send({
+          message: `Error ${error.name}:${error.message}`
+        })
+        next(error)})
   } else {
     res.status(400).send({
       message: 'Passwords do not match'
