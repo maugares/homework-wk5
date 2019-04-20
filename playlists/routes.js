@@ -1,15 +1,8 @@
 const { Router } = require('express')
 const Playlist = require('./model')
 const auth = require('../auth/middleware')
-// const { toData } = require('./jwt')
 
 const router = new Router()
-
-// const errorMessage = () => {
-//   return (res.status(404).send({
-//     message: `Playlist does not exist`
-//   }))
-// }
 
 //-------   CREATE A PLAYLIST   -------//
 router.post('/playlists', auth, (req, res, next) => {
@@ -46,6 +39,11 @@ router.get('/playlists', auth, (req, res, next) => {
       }
     })
     .then(playlists => {
+      if (!playlist) {
+        res.status(404).send({
+          message: `Playlist does not exist`
+        })
+      }
       return res.send([playlists])
     })
     .catch(error => {
@@ -90,24 +88,24 @@ router.delete('/playlists/:id', auth, (req, res, next) => {
         id: req.params.id,
         userId: userId,
       }
-  })
-  .then(playlist => {
-    if (!playlist) {
-      res.status(404).send({
-        message: `Playlist does not exist`
-      })
-    }
-    return playlist.destroy()
-      .then(() => res.send({
-        message: `Playlist was deleted`
-      }))
-  })
-  .catch(error => {
-    res.status(400).send({
-      message: `Error ${error.name}:${error.message}`
     })
-    next(error)
-  })
+    .then(playlist => {
+      if (!playlist) {
+        res.status(404).send({
+          message: `Playlist does not exist`
+        })
+      }
+      return playlist.destroy()
+        .then(() => res.send({
+          message: `Playlist was deleted`
+        }))
+    })
+    .catch(error => {
+      res.status(400).send({
+        message: `Error ${error.name}:${error.message}`
+      })
+      next(error)
+    })
 })
 
 module.exports = router
