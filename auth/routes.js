@@ -46,6 +46,7 @@ router.post('/tokens', (req, res, next) => {
     })
 })
 
+// REMOVE!!
 // Restrict access to users with a valid Token
 router.get('/test', auth, (req, res) => {
   console.log(res)
