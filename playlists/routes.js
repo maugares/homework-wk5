@@ -74,13 +74,40 @@ router.get('/playlists/:id', auth, (req, res, next) => {
       }
       return res.send(playlist)
     })
-    .catch (error => {
-  res.status(400).send({
-    message: `User playlist not found`
-  })
-  next(error)
-})
+    .catch(error => {
+      res.status(400).send({
+        message: `User playlist not found`
+      })
+      next(error)
+    })
 })
 
+router.delete('/playlists/:id', auth, (req, res, next) => {
+  const userId = req.user.dataValues.id
+  Playlist
+    .findOne({
+      where: {
+        id: req.params.id,
+        userId: userId,
+      }
+  })
+  .then(playlist => {
+    if (!playlist) {
+      res.status(404).send({
+        message: `Playlist does not exist`
+      })
+    }
+    return playlist.destroy()
+      .then(() => res.send({
+        message: `Playlist was deleted`
+      }))
+  })
+  .catch(error => {
+    res.status(400).send({
+      message: `Error ${error.name}:${error.message}`
+    })
+    next(error)
+  })
+})
 
 module.exports = router
