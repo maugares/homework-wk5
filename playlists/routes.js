@@ -52,8 +52,9 @@ router.get('/playlists', auth, (req, res, next) => {
 //-------   GET ONE PLAYLIST   -------//
 router.get('/playlists/:id', (req, res, next) => {
   // console.log(req)
+  const userId = req.user.dataValues.id
   Playlist
-    .findByPk(req.params.id)
+    .findByPk(req.params.id, where: { userId })
     .then(playlist => {
       // console.log('Return from findByPk:', playlist)
       if (!playlist) {
