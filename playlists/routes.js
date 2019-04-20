@@ -5,6 +5,7 @@ const auth = require('../auth/middleware')
 
 const router = new Router()
 
+//-------   CREATE A PLAYLIST   -------//
 router.post('/playlists', auth, (req, res, next) => {
   const userId = req.user.dataValues.id
   console.log(req.headers)
@@ -24,12 +25,13 @@ router.post('/playlists', auth, (req, res, next) => {
       res.status(400).send({
         message: `Error ${error.name}:${error.message}`
       })
-      next(error)})
+      next(error)
+    })
 })
 
+//-------   GET ALL PLAYLISTS   -------//
 router.get('/playlists', auth, (req, res, next) => {
   const userId = req.user.dataValues.id
-  console.log(userId)
   Playlist
     .findAll({
       where: {
@@ -43,7 +45,29 @@ router.get('/playlists', auth, (req, res, next) => {
       res.status(400).send({
         message: `Error ${error.name}:${error.message}`
       })
-      next(error)})
+      next(error)
+    })
 })
+
+//-------   GET ONE PLAYLIST   -------//
+router.get('/playlists/:id', (req, res, next) => {
+  // console.log(req)
+  Playlist
+    .findByPk(req.params.id)
+    .then(playlist => {
+      // console.log('Return from findByPk:', playlist)
+      if (!playlist) {
+        errorMessage()
+      }
+      return res.send(playlist)
+    })
+    .catch(error => {
+      res.status(400).send({
+        message: `Error ${error.name}:${error.message}`
+      })
+      next(error)
+    })
+})
+
 
 module.exports = router

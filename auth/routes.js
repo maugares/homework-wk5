@@ -37,12 +37,11 @@ router.post('/tokens', (req, res, next) => {
         })
       }
     })
-    .catch(err => {
-      console.log(err)
+    .catch(error => {
       res.status(500).send({
-        message: 'Something went wrong'
+        message: `Error ${error.name}:${error.message}`
       })
-    })
+      next(error)})
 })
 
 // REMOVE!!
