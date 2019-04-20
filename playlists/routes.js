@@ -5,10 +5,15 @@ const auth = require('../auth/middleware')
 
 const router = new Router()
 
+// const errorMessage = () => {
+//   return (res.status(404).send({
+//     message: `Playlist does not exist`
+//   }))
+// }
+
 //-------   CREATE A PLAYLIST   -------//
 router.post('/playlists', auth, (req, res, next) => {
   const userId = req.user.dataValues.id
-  console.log(req.headers)
   Playlist
     .create({
       name: req.headers.name,
@@ -16,7 +21,9 @@ router.post('/playlists', auth, (req, res, next) => {
     })
     .then(playlist => {
       if (!playlist) {
-        errorMessage()
+        res.status(404).send({
+          message: `Playlist not provided`
+        })
       }
       res.setHeader('userId', userId)
       return res.status(201).send(playlist)
@@ -50,24 +57,29 @@ router.get('/playlists', auth, (req, res, next) => {
 })
 
 //-------   GET ONE PLAYLIST   -------//
-router.get('/playlists/:id', (req, res, next) => {
-  // console.log(req)
+router.get('/playlists/:id', auth, (req, res, next) => {
   const userId = req.user.dataValues.id
   Playlist
-    .findByPk(req.params.id, where: { userId })
+    .findOne({
+      where: {
+        id: req.params.id,
+        userId: userId,
+      }
+    })
     .then(playlist => {
-      // console.log('Return from findByPk:', playlist)
       if (!playlist) {
-        errorMessage()
+        res.status(404).send({
+          message: `Playlist does not exist`
+        })
       }
       return res.send(playlist)
     })
-    .catch(error => {
-      res.status(400).send({
-        message: `Error ${error.name}:${error.message}`
-      })
-      next(error)
-    })
+    .catch (error => {
+  res.status(400).send({
+    message: `User playlist not found`
+  })
+  next(error)
+})
 })
 
 
