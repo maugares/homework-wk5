@@ -5,23 +5,32 @@ const bcrypt = require('bcrypt')
 const router = new Router()
 
 router.post('/users', (req, res, next) => {
+  const email = req.headers.email
+  const password = req.headers.password
+  const password_confirmation = req.headers.password_confirmation
+
   const user = {
-    email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 10),
-    password_confirmation: bcrypt.hashSync(req.body.password, 10)
+    email: email,
+    password: bcrypt.hashSync(password, 10)
   }
 
-  User
-    .create(user)
-    .then(user => {
-      if (!user) {
-        return res.status(404).send({
-          message: `user does not exist`
-        })
-      }
-      return res.status(201).send(user)
+  if (password === password_confirmation) {
+    User
+      .create(user)
+      .then(user => {
+        if (!user) {
+          return res.status(404).send({
+            message: `user does not exist`
+          })
+        }
+        return res.status(201).send(user)
+      })
+      .catch(error => next(error))
+  } else {
+    res.status(400).send({
+      message: 'Passwords do not match'
     })
-    .catch(error => next(error))
+  }
 })
 
 module.exports = router
