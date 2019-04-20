@@ -64,7 +64,6 @@ router.get('/playlists/:id/songs', auth, (req, res, next) => {
       }
     })
     .then(songs => {
-      console.log(songs)
       if (!songs) {
         res.status(422).send({
           message: `Song request is not valid`

@@ -56,33 +56,32 @@ router.get('/playlists', auth, (req, res, next) => {
 })
 
 //-------   GET ONE PLAYLIST   -------//
-// router.get('/playlists/:id', auth, (req, res, next) => {
-//   const userId = req.user.dataValues.id
-//   Playlist
-//     .findOne({
-//       where: {
-//         id: req.params.id,
-//         user_id: userId,
-//       }
-//     })
-//     .then(playlist => {
-//       if (!playlist) {
-//         res.status(422).send({
-//           message: `Playlist provided is incorrect`
-//         })
-//       }
-//       return res.send(playlist)
-//     })
-//     .catch(error => {
-//       res.status(404).send({
-//         message: `User playlist not found`
-//       })
-//       next(error)
-//     })
-// })
+router.get('/playlists/:id', auth, (req, res, next) => {
+  const userId = req.user.dataValues.id
+  Playlist
+    .findOne({
+      where: {
+        id: req.params.id,
+        user_id: userId,
+      }
+    })
+    .then(playlist => {
+      if (!playlist) {
+        res.status(422).send({
+          message: `Playlist provided is incorrect`
+        })
+      }
+      return res.send(playlist)
+    })
+    .catch(error => {
+      res.status(404).send({
+        message: `User playlist not found`
+      })
+      next(error)
+    })
+})
 
 router.delete('/playlists/:id', auth, (req, res, next) => {
-  // router.get('/playlists/:id', auth, (req, res, next) => {
   const playlistId = req.params.id
   const userId = req.user.dataValues.id
   Playlist
@@ -108,8 +107,6 @@ router.delete('/playlists/:id', auth, (req, res, next) => {
         })
         .then(songs => {
           for (song in songs) {
-            console.log("SONG IN SONGS", `${song} = ${songs[song]}`)
-            console.log('next')
             songs[song].destroy()
           }
 

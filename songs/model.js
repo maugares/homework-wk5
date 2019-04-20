@@ -6,15 +6,15 @@ const Song = sequelize.define(
   {
     title: {
       type: Sequelize.STRING,
-      // allowNull: false
+      allowNull: false
     },
     artist: {
       type: Sequelize.STRING,
-      // allowNull: false
+      allowNull: false
     },
     album: {
       type: Sequelize.STRING,
-      // allowNull: false
+      allowNull: false
     },
     playlist_id: {
       type: Sequelize.INTEGER,
