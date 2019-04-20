@@ -12,4 +12,4 @@ app
   .use(usersRouter)
   .use(playlistsRouter)
   .use(songsRouter)
-  .listen(4000, () => console.log(`Listening on port ${port}`))
+  .listen(port, () => console.log(`Listening on port ${port}`))
